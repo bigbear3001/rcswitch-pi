@@ -1,5 +1,5 @@
 /*
- Usage: ./send <systemCode> <unitCode> <command>
+ Usage: ./sendB <systemCode> <unitCode> <command>
  Command is 0 for OFF and 1 for ON
  */
 
@@ -15,14 +15,30 @@ int main(int argc, char *argv[]) {
      for pin mapping of the raspberry pi GPIO connector
      */
     int PIN = 0;
-    char* systemCode = argv[1];
+    char* systemCodeArg = argv[1];
     int unitCode = atoi(argv[2]);
     int command  = atoi(argv[3]);
     
     if (wiringPiSetup () == -1) return 1;
-    printf("sending systemCode[%s] unitCode[%i] command[%i]\n", systemCode, unitCode, command);
+    printf("sending systemCodeArg[%s] unitCode[%i] command[%i]\n", systemCodeArg, unitCode, command);
     RCSwitch mySwitch = RCSwitch();
     mySwitch.enableTransmit(PIN);
+    int systemCode = 0;
+
+    if (systemCodeArg[0] == 'A' ) {
+        systemCode = 1; 	
+    } else if (systemCodeArg[0] == 'B') {
+        systemCode = 2;
+    } else if (systemCodeArg[0] == 'C') {
+	systemCode = 3;
+    } else if (systemCodeArg[0] == 'D') {
+        systemCode = 4;
+    } else if (systemCodeArg[0] == 'E') {
+        systemCode = 5;
+    } else {
+	printf("systemcode[%s] is unsupported\n", systemCodeArg);
+        return -1; 
+    }
     
     switch(command) {
         case 1:
@@ -35,5 +51,5 @@ int main(int argc, char *argv[]) {
             printf("command[%i] is unsupported\n", command);
             return -1;
     }
-	return 0;
+    return 0;
 }
